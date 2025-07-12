@@ -1,40 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/cubit/news_cubit.dart';
+import 'package:news_app/cubit/news_state.dart';
 import 'package:news_app/widgets/artical_item.dart';
-import 'package:news_app/widgets/artical_listview.dart';
+import 'package:news_app/widgets/article_item.dart';
+import 'package:news_app/widgets/category_listview.dart';
 import 'package:news_app/widgets/catogery_listview.dart';
-import 'package:news_app/widgets/news_catogery_item.dart';
 
-class HomeScreen extends StatefulWidget {
+import '../article_item.dart';
+import '../category_listview.dart';
+
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: const Text("News App",style: TextStyle(fontWeight: FontWeight.bold),),
+        backgroundColor: Colors.black26,
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search, size: 30,))
-        ],
-        backgroundColor: Colors.blueGrey,
-        title: Text("News App", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-      ),
-      body:CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: SizedBox(height: 10,)),
-          SliverToBoxAdapter(child: CatogeryListview()),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text("Genral News", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-            ),
+          IconButton(
+            onPressed: () {
+
+            },
+            icon: const Icon(Icons.search),
           ),
-          ArticleListview(),        ],
+        ],
+      ),
+      body: BlocBuilder<NewsCubit, NewsState>(
+        builder: (context, state) {
+          if (state is NewsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          else if (state is NewsSuccess) {
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: CategoryListview(
+                    onCategoryTap: (category) {
+
+                      if (category.toLowerCase() != state.selectedCategory) {
+                        context.read<NewsCubit>().fetchNews(category);
+                      }
+                    },
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      "${state.selectedCategory.toUpperCase()} News",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                      return ArticleItem(article: state.articles[index]);
+                    },
+                    childCount: state.articles.length,
+                  ),
+                ),
+              ],
+            );
+          }
+
+          else if (state is NewsError) {
+            return Center(
+              child: Text(
+                "An error occurred: ${state.errorMessage}",
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
+
+          return const SizedBox();
+        },
       ),
     );
   }

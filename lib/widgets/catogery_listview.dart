@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/model/category.dart';
 import 'package:news_app/model/catogery.dart';
 import 'package:news_app/widgets/news_catogery_item.dart';
-class CatogeryListview extends StatelessWidget {
-  const CatogeryListview({super.key});
+import 'category_item.dart';
+
+class CategoryListview extends StatelessWidget {
+  final void Function(String categoryName) onCategoryTap;
+
+  const CategoryListview({super.key, required this.onCategoryTap});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
       child: ListView.builder(
-        scrollDirection: Axis.horizontal ,
-        itemBuilder: (context,index){
-          return CategoryItem(catogery: NewsCatogery[index]);
+        scrollDirection: Axis.horizontal,
+        itemCount: newsCategory.length,
+        itemBuilder: (context, index) {
+          return CategoryItem(
+            category: newsCategory[index],
+            onTap: onCategoryTap,
+          );
         },
-        itemCount: NewsCatogery.length,),
+      ),
     );
   }
 }

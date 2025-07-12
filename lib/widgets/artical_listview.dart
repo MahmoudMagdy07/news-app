@@ -1,39 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/model/artical.dart';
+import 'package:news_app/model/article.dart';
 import 'package:news_app/network/api_service.dart';
 import 'package:news_app/widgets/artical_item.dart';
- class ArticleListview extends StatefulWidget {
-   const ArticleListview({super.key});
+import 'package:news_app/widgets/article_item.dart';
+import 'article_item.dart';
 
-   @override
-   State<ArticleListview> createState() => _ArticleListviewState();
- }
+class ArticleListview extends StatefulWidget {
+  const ArticleListview({super.key});
 
- class _ArticleListviewState extends State<ArticleListview> {
-  List<Article>? finalList ;
-   @override
-   void initState(){
-      getNews();
-     // TODO: implement initState
-     super.initState();
-   }
-   getNews()async{
-     ApiService apiService = ApiService();
-     finalList =await apiService.getNews();
-     setState(() {
+  @override
+  State<ArticleListview> createState() => _ArticleListviewState();
+}
 
-     });
-   }
-   @override
-   Widget build(BuildContext context) {
+class _ArticleListviewState extends State<ArticleListview> {
+  List<Article>? finalList;
 
-     return finalList==null ? SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()))
-         :SliverList.builder(itemBuilder: (context,index){
-           return ArticleItem(article: finalList![index],);
-     },itemCount: finalList!.length);
+  @override
+  void initState() {
+    getNews();
+    super.initState();
+  }
 
+  getNews() async {
+    ApiService apiService = ApiService();
+    finalList = await apiService.getNews();
+    setState(() {});
+  }
 
-   }
-
-
- }
+  @override
+  Widget build(BuildContext context) {
+    return finalList == null
+        ? SliverToBoxAdapter(
+      child: Center(child: CircularProgressIndicator()),
+    )
+        : SliverList(
+      delegate: SliverChildBuilderDelegate(
+            (context, index) => ArticleItem(article: finalList![index],),
+        childCount: finalList!.length,
+      ),
+    );
+  }
+}

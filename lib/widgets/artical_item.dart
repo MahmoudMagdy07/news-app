@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/model/artical.dart';
+import 'package:news_app/model/article.dart';
 
 class ArticleItem extends StatefulWidget {
-  ArticleItem({super.key, required this.article});
+  const ArticleItem({super.key, required this.article});
   final Article article;
 
   @override
@@ -10,12 +11,12 @@ class ArticleItem extends StatefulWidget {
 }
 
 class _ArticleItemState extends State<ArticleItem> {
-  bool isExpanded = false;
+  bool showFullText = false;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -23,43 +24,40 @@ class _ArticleItemState extends State<ArticleItem> {
             width: double.infinity,
             height: 200,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(40),
-                topLeft: Radius.circular(40),
-              ),
               image: DecorationImage(
                 fit: BoxFit.fill,
                 image: NetworkImage(
                   widget.article.image ??
-                      "https://images.pexels.com/photos/47356/freerider-skiing-ski-sports-47356.jpeg",
+                      "no photo",
                 ),
+              ),
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20),
               ),
             ),
           ),
-          SizedBox(height: 10),
-          Text(
-            widget.article.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          SizedBox(height: 5),
-          GestureDetector(
+          InkWell(
             onTap: () {
               setState(() {
-                isExpanded = !isExpanded;
+                showFullText = !showFullText;
               });
             },
-            child: Text(
-              widget.article.description ?? "No Description",
-              maxLines: isExpanded ? null : 2,
-              overflow:
-              isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 15),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.article.description ?? '',
+                maxLines: showFullText ? null : 2,
+                overflow: showFullText
+                    ? TextOverflow.visible
+                    : TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 16),
+              ),
             ),
+          ),
+          Text(
+            widget.article.title,
+            style: TextStyle(color: Colors.grey),
           ),
         ],
       ),

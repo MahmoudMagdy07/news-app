@@ -1,18 +1,55 @@
 import 'package:dio/dio.dart';
 import 'package:news_app/model/artical.dart';
+import 'package:news_app/model/article.dart';
+
 class ApiService {
  final Dio _dio = Dio();
-  final _apiKey = "37052459a7644ced973fa1a8bb9e5e52";
-  final String _baseUrl ="https://newsapi.org";
-  Future<List<Article>> getNews()async{
-   var response =await _dio.get("$_baseUrl/v2/top-headlines?country=us&category=business&apiKey=$_apiKey");
-   var jsonData = response.data;
-  List<Article> articals = [];
-  for(var item in jsonData["articles"]){
-   articals.add(
-    Article(author: item["author"],title: item["title"],description: item["description"],image: item["urlToImage"],)
+ final String _apiKey = "022013a4946d4d7684285374fde847b6";
+ final String _baseUrl = "https://newsapi.org";
+
+
+ Future<List<Article>> getNews([String category = "general"]) async {
+  Response response = await _dio.get(
+   "$_baseUrl/v2/top-headlines?country=us&category=$category&apiKey=$_apiKey",
+  );
+
+  var jsonData = response.data;
+  List<Article> articles = [];
+
+  for (var item in jsonData["articles"]) {
+   articles.add(
+    Article(
+     author: item["author"] ?? "Unknown",
+     title: item["title"] ?? "No Title",
+     image: item["urlToImage"] ?? "https://via.placeholder.com/300x200",
+     description: item["description"] ?? "",
+    ),
    );
   }
- return articals;
+
+  return articles;
+ }
+
+
+ Future<List<Article>> getNewsByCategory(String category) async {
+  Response response = await _dio.get(
+   "$_baseUrl/v2/top-headlines?country=us&category=${category.toLowerCase()}&apiKey=$_apiKey",
+  );
+
+  var jsonData = response.data;
+  List<Article> articles = [];
+
+  for (var item in jsonData["articles"]) {
+   articles.add(
+    Article(
+     author: item["author"] ?? "Unknown",
+     title: item["title"] ?? "No Title",
+     image: item["urlToImage"] ?? "https://via.placeholder.com/300x200",
+     description: item["description"] ?? "",
+    ),
+   );
   }
+
+  return articles;
+ }
 }
