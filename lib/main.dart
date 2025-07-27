@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/cubit/news_cubit.dart';
-import 'package:news_app/screen/home_screen.dart';
-import 'package:news_app/screens/home_screen.dart';
+import 'package:news_app/screens/animation.dart';
+import 'package:news_app/screens/animation_screen.dart';
 
 void main() {
   runApp(const NewsApp());
@@ -13,15 +13,15 @@ class NewsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NewsCubit()..fetchNews(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => NewsCubit()..fetchNews('business')),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'News App',
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
-        ),
-        home: const HomeScreen(),
+        theme: ThemeData.light(),
+        home: const AnimationScreen(),
       ),
     );
   }

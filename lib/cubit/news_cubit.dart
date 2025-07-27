@@ -15,4 +15,6 @@ class NewsCubit extends Cubit<NewsState> {
       emit(NewsError("Failed to load news: $e"));
     }
   }
+
+  void setCountry(String countryCode) {}
 }

@@ -7,9 +7,6 @@ import 'package:news_app/widgets/article_item.dart';
 import 'package:news_app/widgets/category_listview.dart';
 import 'package:news_app/widgets/catogery_listview.dart';
 
-import '../article_item.dart';
-import '../category_listview.dart';
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -18,13 +15,11 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("News App",style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("News App", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.black26,
         actions: [
           IconButton(
-            onPressed: () {
-
-            },
+            onPressed: () {},
             icon: const Icon(Icons.search),
           ),
         ],
@@ -33,15 +28,12 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is NewsLoading) {
             return const Center(child: CircularProgressIndicator());
-          }
-
-          else if (state is NewsSuccess) {
+          } else if (state is NewsSuccess) {
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
                   child: CategoryListview(
                     onCategoryTap: (category) {
-
                       if (category.toLowerCase() != state.selectedCategory) {
                         context.read<NewsCubit>().fetchNews(category);
                       }
@@ -70,9 +62,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             );
-          }
-
-          else if (state is NewsError) {
+          } else if (state is NewsError) {
             return Center(
               child: Text(
                 "An error occurred: ${state.errorMessage}",
@@ -80,8 +70,6 @@ class HomeScreen extends StatelessWidget {
               ),
             );
           }
-
-
           return const SizedBox();
         },
       ),
